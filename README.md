@@ -11,14 +11,21 @@ I was just learning how to use background sync while I drafted this demo, so I b
 
 https://developers.google.com/web/updates/2015/12/background-sync
 
-https://github.com/WICG/BackgroundSync/tree/master/demo
+https://github.com/WICG/BackgroundSync/tree/master/
+https://jakearchibald.github.io/isserviceworkerready/demos/sync/
+
+https://serviceworke.rs/request-deferrer_service-worker_doc.html
 
 
 # Branches
 
-Plain IndexedDB
-IndexedDB w/ a simple promise wrapper
-IndexedDB via Jake Archibald's idb library
-WorkBox
+Create git branches for other implementations that use various libraries:
 
-send me a pull request if you'd like to add your own implementation
+- Plain IndexedDB
+- IndexedDB w/ a simple promise wrapper
+- IndexedDB via Jake Archibald's idb library (or idb-keyval)
+- WorkBox
+- ServiceWorkerWare
+- localforage
+
+send a pull request if you'd like to add your own implementation
