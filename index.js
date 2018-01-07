@@ -12,25 +12,26 @@ if (useServiceWorker) {
 }
 
 // Open a new db to use as the Outbox
-let outboxDB;
 const openOutbox = () => {
-  const request = indexedDB.open('outbox', IDB_VERS);
-  request.onerror = function(event) {
-    console.error(event.target.errorcode);
-  };
-  request.onsuccess = function(event) {
-    console.log("Database opened...");
-    outboxDB = this.result;
-  };
-  request.onupgradeneeded = function(event) {
-    // const db = event.target.result;
-    const store = event.currentTarget.result.createObjectStore(
-      OBJ_STORE_NAME, {keyPath:'id', autoIncrement: true}
-    );
-    console.log("onupgradeneeded() fired! store: ", store);
-  };
+  return new Promise(function(resolve, reject) {
+    let outboxDB;
+    const request = indexedDB.open('outbox', IDB_VERS);
+    request.onerror = function(event) {
+      reject(event.target.errorcode);
+    };
+    request.onsuccess = function(event) {
+      console.log("Database opened...");
+      resolve(this.result);
+    };
+    request.onupgradeneeded = function(event) {
+      // const db = event.target.result;
+      const store = event.currentTarget.result.createObjectStore(
+        OBJ_STORE_NAME, {keyPath:'id', autoIncrement: true}
+      );
+      console.log("onupgradeneeded() fired! store: ", store);
+    };
+  });
 }
-openOutbox();
 
 // Attach an event listener to hand over form submission to the Service Worker, if one exists.
 const form = document.querySelector('.form');
@@ -38,10 +39,12 @@ form.addEventListener('submit', (event) => {
   event.preventDefault();
   const formData = new FormData(form);
   if (useServiceWorker) {
-    postDataToOutbox(formData, outboxDB);
-    navigator.serviceWorker.ready.then( (reg) => {
-      return reg.sync.register('outbox');
-    });
+    openOutbox().then(db => {
+      postDataToOutbox(formData, db);
+      navigator.serviceWorker.ready.then( (reg) => {
+        return reg.sync.register('outbox');
+      });
+    })
   } else {
     postDataToServer(formData);
   }
