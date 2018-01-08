@@ -29,3 +29,7 @@ Create git branches for other implementations that use various libraries:
 - localforage
 
 send a pull request if you'd like to add your own implementation
+
+# Network First
+
+As a POST request, it makes sense to use a network-first approach, so we're not unnecessarily delaying our network calls when connectivity is strong. This assumes that persisting data to the server is our main goal, with no other need to store data in IDB beyond that ultimate purpose, which is why we can discard the entries in IDB once the POST call succeeds. Of course, there are many cases where one might wish to persist data in IDB for extended use by the client, and where local persistence might take precedence over updating the server; however, such use cases introduce more complexity and go beyond the generic example of an "outbox" I was trying to exemplify here.
