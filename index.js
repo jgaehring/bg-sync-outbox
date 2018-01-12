@@ -32,6 +32,7 @@ const openOutbox = () => {
 }
 
 // Attach an event listener to hand over form submission to the Service Worker, if one exists.
+// TODO: Try moving all this logic to the SW as a 'fetch' event listner for 'POST' calls.
 const form = document.querySelector('.form');
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -44,7 +45,8 @@ form.addEventListener('submit', (event) => {
       .then(db => postDataToOutbox(db, formData))
       .then(result => console.log(result))
       .then(() => navigator.serviceWorker.ready)
-      .then( (reg) => reg.sync.register('outbox'));
+      .then(reg => reg.sync.register('outbox-sync'))
+      .catch(err => err);
     } else {
       console.error("Network down; outbox not supported.", err);
     }
