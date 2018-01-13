@@ -18,7 +18,10 @@ form.addEventListener('submit', (event) => {
       .then(db => postDataToOutbox(db, formData))
       .then(result => console.log(result))
       .then(() => navigator.serviceWorker.ready)
-      .then(reg => reg.sync.register('outbox-sync'))
+      .then(reg => {
+        console.log("Attempting to register sync event...");
+        reg.sync.register('outbox-sync')
+    })
       .catch(err => err);
     } else {
       console.error("Network down; outbox not supported.", err);

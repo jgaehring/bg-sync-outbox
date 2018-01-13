@@ -1,10 +1,10 @@
+// Import the Outbox module. Remember: sw.js runs in a different global scope from the rest of the page scripts (WorkerGlobalScope instead of Window) and will run independently even after the page/browser has been closed, so it needs to have its own copy of everything.
 self.importScripts('outbox.js')
 
-console.log("This is your friendly neighborhood service worker.");
-
+// Listen for a sync event to start trying to send Form Data from the Outbox to the Server. Use waitUntil() to guarantee another sync event is registered if this one fails.
 self.addEventListener('sync', (event) => {
   if (event.tag === 'outbox-sync') {
-    // Use waitUntil() to guarantee another sync event is registered if this one fails
+    console.log("Sync event fired");
     event.waitUntil(
       openOutbox()
       .then(db => getDataFromOutbox(db))

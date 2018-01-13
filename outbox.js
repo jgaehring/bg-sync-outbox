@@ -1,9 +1,9 @@
-// OUTBOX MODULE: These functions and configuration details need to be reachable from both the service worker and index.js for making calls to IndexedDB and the network. For simplicity sake, I'm just adding another script tag to index.html and using importScripts() to pull everything into the Service Worker. Remember: sw.js runs in a different global scope from index.js (WorkerGlobalScope instead of Window) and will run independently even after the page/browser has been closed, so it needs to have its own copy of everything; ES6 import/export won't work either. I don't want to add any other dependencies to this demo, but in production a more robust module loader/bundler should be used.
+// OUTBOX MODULE: These functions and configuration details need to be reachable from both the service worker and index.js for making calls to IndexedDB and the network. For simplicity sake, I'm just adding another script tag to index.html and using importScripts() to pull everything into the Service Worker. I don't want to add any other dependencies to this demo, but in production a more robust module loader/bundler should be used.
 
 // Globals
-const IDB_VERS = 1;
+const IDB_VERS = 2;
 const DB_NAME = 'outbox'
-const OBJ_STORE_NAME = 'forms';
+const OBJ_STORE_NAME = 'forms-v' + IDB_VERS;
 const POST_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 const outboxIsSupported = ('serviceWorker' in navigator && 'SyncManager' in window);
@@ -23,7 +23,10 @@ const openOutbox = () => {
       const store = event.currentTarget.result.createObjectStore(
         OBJ_STORE_NAME, {keyPath:'id', autoIncrement: true}
       );
-      console.log("onupgradeneeded() fired! store: ", store);
+      const msg = (event.oldVersion === 0) ?
+        "Outbox installed!" :
+        `Outbox upgraded from v.${event.oldVersion} to v.${event.newVersion}!`
+      console.log(msg);
     };
   });
 }
@@ -73,8 +76,8 @@ const postDataToServer = (formData) => {
       }
       return response.json();
     })
+    .catch(error => reject(error))
     .then(response => resolve(response))
-    .catch(error => reject(new Error("Failed to connect to server. Error Code: " + error.message)))
   });
 };
 
