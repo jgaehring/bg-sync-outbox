@@ -1,6 +1,6 @@
 # The Outbox Pattern
 
-This is a basic demo of the **outbox** or **queue** pattern for caching data before posting it to a server with Service Worker. It uses IndexedDB and Background Sync (the SyncManager interface, also known as one-off Background Sync). This is intended to illustrate a generic and common use case for background sync, though straight-forward examples of this were hard to find at the time of posting.
+This is a basic demo of the **outbox** or **queue** pattern for caching data before posting it to a server with Service Worker. It uses IndexedDB and Background Sync (the SyncManager interface, also known as one-off Background Sync). This is intended to illustrate a generic and common use case for background sync.
 
 At the time of posting this, there were many great demos illustrating background sync, but they got very involved with the view layer or with illustrating other features which are not essential to background sync, such as push notifications. I also wanted an example which didn't rely on other libraries, particularly for interacting with IndexedDB. These other demos provide great examples of how to use and structure an outbox in a larger application, and address some best practices I don't want to go into here. They're great references, and I used them a lot in creating this demo:
 
