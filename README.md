@@ -1,24 +1,33 @@
 # The Outbox Pattern
+This is a basic demo of the **outbox** or **queue** pattern for caching a web application's form data when it's ready to be sent but lacks network connectivity, then posting it to a server in the background when connectivity is restored. It uses IndexedDB and Background Sync (a.k.a. the SyncManager interface of the Service Worker API, a.k.a. 'one-off' Background Sync). This is intended to illustrate a rudimentary, generic and common use case for background sync, following these steps:
 
-This is a basic demo of the **outbox** or **queue** pattern for caching data before posting it to a server with Service Worker. It uses IndexedDB and Background Sync (the SyncManager interface, also known as one-off Background Sync). This is intended to illustrate a generic and common use case for background sync.
+1. Try to send form data over the network first.*
+2. If the network request fails, store the form data in IndexedDB.
+3. Fire a sync event once the data is stored.
+4. When the sync event fires, take the form data from IDB and try sending it over the network again.
+5. If the sync fails, keep retrying; a new sync event should be triggered each time one fails, as long as `.waitUntil()` is used.
+6. Once the sync event succeeds, the form data can be deleted from IDB (optional).
 
-At the time of posting this, there were many great demos illustrating background sync, but they got very involved with the view layer or with illustrating other features which are not essential to background sync, such as push notifications. I also wanted an example which didn't rely on other libraries, particularly for interacting with IndexedDB. These other demos provide great examples of how to use and structure an outbox in a larger application, and address some best practices I don't want to go into here. They're great references, and I used them a lot in creating this demo:
 
-https://developers.google.com/web/updates/2015/12/background-sync
-https://github.com/WICG/BackgroundSync/tree/master/
-https://jakearchibald.github.io/isserviceworkerready/demos/sync/
-https://serviceworke.rs/request-deferrer_service-worker_doc.html
+* = see ["Network First"](#network-first) below
 
+At the time of posting this, there were many great demos illustrating background sync and how to create an outbox, but they got very involved with the view layer or with illustrating other features that are not essential to background sync, such as push notifications (instead, I'm just using `console.log()` to observe progress). I couldn't find a rudimentary example for showing the essential inner workings of the `'sync'` event and IndexedDB. I also wanted an example which didn't rely on other libraries, particularly for interacting with IndexedDB, although Jake Archibald's [idb](https://www.npmjs.com/package/idb) library should be recommended for real world applications. These other demos provide great examples of how to use and structure an "outbox" database in a larger application, and address some best practices I didn't want to go into here. They're great references, and I drew heavily from their examples in creating this demo:
+
+- https://developers.google.com/web/updates/2015/12/background-sync  
+- https://github.com/WICG/BackgroundSync/  
+- https://github.com/jakearchibald/emojoy  
+- https://serviceworke.rs/request-deferrer_service-worker_doc.html  
+- https://www.twilio.com/blog/2017/02/send-messages-when-youre-back-online-with-service-workers-and-background-sync.html  
+
+# Network First
+Since the main goal here is to send data, it makes sense to use a network-first approach, only using the outbox as a fallback, so we're not unnecessarily delaying our network calls when connectivity is strong. This assumes that persisting data to the server is our single purpose, with no other need to store data in IDB beyond that ultimate goal. We can even discard the entries in IDB once the POST call succeeds. Of course, there are many cases where one might wish to persist data in IDB for extended use by the client, and where local persistence might even take precedence over updating the server; however, such use cases introduce more complexity and go beyond the generic scope of the "outbox" model I was trying to exemplify here.
+
+# Browser Support
+While [other parts of the Service Worker API are seeing broader and broader support across all browsers](https://jakearchibald.github.io/isserviceworkerready/), Background Sync is still relegated to newer versions of Chrome (v.49 or higher), although it's currently in development for Firefox and Edge. I've also made generous use of ES6+ syntax, since it's already assumed a contemporary browser is being used to support the sync features.
 
 # Other implementations
-
-Over time it would be nice to add other implementations, in their own branches of this repo, using some common libraries:
-- IndexedDB w/ a simple promise wrapper
-- IndexedDB via Jake Archibald's idb library (or idb-keyval)
+Over time it would be nice to add other implementations as separate branches of this repo, using some common libraries:
+- Jake Archibald's [idb](https://www.npmjs.com/package/idb) library (or [idb-keyval](https://www.npmjs.com/package/idb-keyval))
 - WorkBox
 - ServiceWorkerWare
 - localforage
-
-# Network First
-
-As a POST request, it makes sense to use a network-first approach, so we're not unnecessarily delaying our network calls when connectivity is strong. This assumes that persisting data to the server is our main goal, with no other need to store data in IDB beyond that ultimate purpose. We can discard the entries in IDB once the POST call succeeds. Of course, there are many cases where one might wish to persist data in IDB for extended use by the client, and where local persistence might take precedence over updating the server; however, such use cases introduce more complexity and go beyond the generic example of an "outbox" I was trying to exemplify here.
