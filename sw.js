@@ -9,8 +9,13 @@ self.addEventListener('sync', (event) => {
       openOutbox()
       .then(db => getDataFromOutbox(db))
       .then(formData => postDataToServer(formData))
-      .then(response => console.log("Successfully posted to server!\nResponse: ", response))
-      .catch(err => console.error("Failed to sync with server: ", err))
+      .then(response => {
+        console.log("Successfully posted to server!\nResponse: ", response);
+      })
+      .catch(error => {
+        console.error("Failed to sync with server: ", error);
+        return Promise.reject(error);
+      })
     )
   };
 })
