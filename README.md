@@ -8,8 +8,7 @@ This is a basic demo of the **outbox** or **queue** pattern for caching a web ap
 5. If the sync fails, keep retrying; a new sync event should be triggered each time one fails, as long as `.waitUntil()` is used.
 6. Once the sync event succeeds, the form data can be deleted from IDB (optional).
 
-
-* = see ["Network First"](#network-first) below
+\* = see ["Network First"](#network-first) below
 
 At the time of posting this, there were many great demos illustrating background sync and how to create an outbox, but they got very involved with the view layer or with illustrating other features that are not essential to background sync, such as push notifications (instead, I'm just using `console.log()` to observe progress). I couldn't find a rudimentary example for showing the essential inner workings of the `'sync'` event and IndexedDB. I also wanted an example which didn't rely on other libraries, particularly for interacting with IndexedDB, although Jake Archibald's [idb](https://www.npmjs.com/package/idb) library should be recommended for real world applications. These other demos provide great examples of how to use and structure an "outbox" database in a larger application, and address some best practices I didn't want to go into here. They're great references, and I drew heavily from their examples in creating this demo:
 
