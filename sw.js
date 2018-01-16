@@ -8,11 +8,15 @@ self.addEventListener('sync', (event) => {
     event.waitUntil(
       openOutbox()
       .then(db => getDataFromOutbox(db))
-      .then(formData => postDataToServer(formData))
+      .then(forms => Promise.all(
+        forms.map(formData => {
+          return postDataToServer(formData);
+        })
+      ))
       .then(response => {
         console.log(
           "Successfully posted to server!\n" +
-          "Response: \n",
+          "Responses: \n",
           response
         );
       })

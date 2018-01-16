@@ -54,7 +54,7 @@ const postDataToOutbox = (db, formData) => {
   return new Promise(function(resolve, reject) {
     const formArray = unpackFormData(formData);
     const store = db.transaction(OBJ_STORE_NAME, 'readwrite').objectStore(OBJ_STORE_NAME);
-    const request = store.add(...formArray);
+    const request = store.add(formArray);
     request.onerror = function(event) {
       reject(new Error(event.target.errorcode))
     };
@@ -75,7 +75,10 @@ const getDataFromOutbox = (outbox) => {
     };
     request.onsuccess = function(event) {
       console.log("Form data retrieved from cache.");
-      resolve(repackFormData(event.target.result));
+      const forms = event.target.result.map(form => {
+        return repackFormData(form);
+      })
+      resolve(forms);
     };
   });
 };
