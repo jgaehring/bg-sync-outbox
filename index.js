@@ -5,17 +5,20 @@ if (outboxIsSupported) {
   .catch(err => console.error(err));
 }
 
-// Try submitting the Form Data over the network first, but if this fails, store it in Outbox, then trigger a sync event to keep retrying the network until it succeeds.
+// Try submitting the Form Data over the network first, but if this
+// fails, store it in Outbox, then trigger a sync event to keep
+// retrying the network until it succeeds.
 const form = document.querySelector('.form');
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', event => {
   event.preventDefault();
   const formData = new FormData(form);
-  postDataToServer(formData)
+  postFormToServer(formData)
   .then(response => console.log("Successfully posted to server!\nResponse: ", response))
   .catch(err => {
     if (outboxIsSupported) {
+      console.log("No network connection. Let's cache the forms and retry...");
       openOutbox()
-      .then(db => postDataToOutbox(db, formData))
+      .then(db => addFormToOutbox(db, formData))
       .then(() => navigator.serviceWorker.ready)
       .then(reg => reg.sync.register('outbox-sync'))
       .catch(err => err);
