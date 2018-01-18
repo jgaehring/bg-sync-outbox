@@ -76,7 +76,7 @@ const addFormToOutbox = (db, formData) => {
 // Retrieve Form Data from Outbox when it's time to sync.
 const getAllFormsFromOutbox = (outbox) => {
   return new Promise(function(resolve, reject) {
-    const store = outbox.transaction(OBJ_STORE_NAME, 'readwrite').objectStore(OBJ_STORE_NAME);
+    const store = outbox.transaction(OBJ_STORE_NAME, 'readonly').objectStore(OBJ_STORE_NAME);
     const request = store.getAll();
     request.onerror = function(event) {
       reject(new Error("Could not access IDB. Error Code: " + event.target.errorcode))
