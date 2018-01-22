@@ -10,7 +10,7 @@
 const IDB_VERS = 1;
 const DB_NAME = 'outbox'
 const OBJ_STORE_NAME = 'forms-v' + IDB_VERS;
-const POST_URL = 'https://jsonplaceholder.typicode.com/posts';
+const POST_URL = 'http://localhost:3000/posts';
 
 const outboxIsSupported = ('serviceWorker' in navigator && 'SyncManager' in window);
 

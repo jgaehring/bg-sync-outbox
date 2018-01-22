@@ -1,0 +1,24 @@
+{
+  "name": "bg-sync-outbox",
+  "version": "1.0.0",
+  "description": "A barebones implementation of Service Worker's background sync API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgaehring/bg-sync-outbox.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jgaehring/bg-sync-outbox/issues"
+  },
+  "homepage": "https://github.com/jgaehring/bg-sync-outbox#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "multer": "^1.3.0"
+  }
+}
