@@ -24,7 +24,7 @@ I've focused here on multipart/form-data requests, but the basic pattern should 
 # Server
 Included is a basic Node server for mocking. I just wanted something that would be able to verify that all form data was received and send an appropriate response to fetch calls. For just about all types of form data, [JSONPlaceholder](http://jsonplaceholder.typicode.com/) by typicode would have sufficed, but for uploading files I needed an Express server with [Multer](https://github.com/expressjs/multer) that could read and write the files to disk. Files will be saved in `./files` so their full contents can be viewed; the directory will be created the first time the server starts. The server is strictly for testing locally and does not give any regard to security, so it should never be exposed to the network.
 
-To start the server, simply run `node server.js` from the project's root.
+To start the server, simply run `npm install && node server.js` from the project's root.
 
 **Node version 8.6.0 or higher is required.**
 
